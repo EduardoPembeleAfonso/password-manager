@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:password_manager/bloc/bloc_auth/auth_bloc.dart';
-import 'package:password_manager/pages/Dashboard/dashboard.dart';
-import 'package:password_manager/pages/SignIn/sign_in.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// bloc
+import 'package:password_manager/bloc/bloc_auth/auth_bloc.dart';
+
+// pages
+import 'package:password_manager/pages/SignIn/sign_in.dart';
+import 'package:password_manager/pages/Dashboard/dashboard.dart';
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({Key? key}) : super(key: key);

@@ -3,7 +3,6 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:password_manager/pages/Drawer/drawer.dart';
-
 import 'package:local_auth/local_auth.dart';
 
 // my states

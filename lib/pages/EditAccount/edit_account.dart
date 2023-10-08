@@ -6,29 +6,47 @@ import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dismissible_page/dismissible_page.dart';
+
+// pages
+import 'package:password_manager/pages/Dashboard/dashboard.dart';
+import 'package:password_manager/pages/Drawer/drawer.dart';
+
+// repos
 import 'package:password_manager/database/repositories/category_repository.dart';
 import 'package:password_manager/database/repositories/account_repository.dart';
-import 'package:password_manager/pages/Dashboard/dashboard.dart';
 
-class AddAccount extends StatefulWidget {
-  const AddAccount({Key? key}) : super(key: key);
+class EditAccount extends StatefulWidget {
+  const EditAccount(
+      {super.key,
+      required this.itemId,
+      required this.itemEmail,
+      required this.itemWebsite,
+      required this.itemCategory,
+      required this.itemIcon,
+      required this.itemPassword});
+  final int itemId;
+  final String itemEmail;
+  final String itemWebsite;
+  final int itemCategory;
+  final String itemIcon;
+  final String itemPassword;
 
   @override
-  State<AddAccount> createState() => _AddAccountState();
+  State<EditAccount> createState() => _EditAccountState();
 }
 
-class _AddAccountState extends State<AddAccount> {
+class _EditAccountState extends State<EditAccount> {
   final _categoryRepository = CategoryRepository();
   final _accountRepository = AccountRepository();
   final _formKey = GlobalKey<FormState>();
-  final _emailOrPhoneController = TextEditingController();
-  final _websiteController = TextEditingController();
   final _categoryController = TextEditingController();
   final _iconAccountController = TextEditingController();
-  final _passwordController = TextEditingController();
+  String _websiteController = '';
+  String _emailOrPhoneController = '';
+  String _passwordController = '';
   String? _fileName;
   late File _myFilePreview;
-  late String _myFile;
+  String _myFile = '';
   Uint8List? _fileBytes;
   late bool _showPassword;
   bool _loading = false;
@@ -43,14 +61,12 @@ class _AddAccountState extends State<AddAccount> {
     _hasFileName = false;
     _isSelected = false;
     _idSelected = 0;
-    super.initState();
     _categoryRepository.getCategorys();
+    super.initState();
   }
 
   @override
   void dispose() {
-    _emailOrPhoneController.dispose();
-    _websiteController.dispose();
     _categoryController.dispose();
     _iconAccountController.dispose();
     super.dispose();
@@ -58,15 +74,21 @@ class _AddAccountState extends State<AddAccount> {
 
   @override
   Widget build(BuildContext context) {
+    File file = File(widget.itemIcon.toString());
     return DismissiblePage(
       onDismissed: () {
-        Navigator.of(context).pop();
+        Navigator.pushReplacement<void, void>(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const MenuDrawer(),
+          ),
+        );
       },
       direction: DismissiblePageDismissDirection.multi,
       isFullScreen: false,
       child: Scaffold(
         body: Hero(
-            tag: 'Unique tag',
+            tag: 'Edit account',
             child: SingleChildScrollView(
               reverse: false,
               child: SizedBox(
@@ -91,7 +113,7 @@ class _AddAccountState extends State<AddAccount> {
                           margin: const EdgeInsets.only(
                               top: 10.0, left: 10, bottom: 10),
                           child: Text(
-                            'Adicionar nova conta',
+                            'Editar conta',
                             style: GoogleFonts.poppins(
                               textStyle:
                                   Theme.of(context).textTheme.displayMedium,
@@ -102,7 +124,6 @@ class _AddAccountState extends State<AddAccount> {
                           ),
                         ),
                         Container(
-                            // height: 260,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 0.0),
                             decoration:
@@ -162,11 +183,9 @@ class _AddAccountState extends State<AddAccount> {
                                                         _myFilePreview,
                                                         fit: BoxFit.cover,
                                                       )
-                                                    : const Icon(
-                                                        Icons.image_outlined,
-                                                        size: 30.0,
-                                                        color:
-                                                            Color(0xFF00a093),
+                                                    : Image.file(
+                                                        file,
+                                                        fit: BoxFit.cover,
                                                       ),
                                               ),
                                             )),
@@ -184,7 +203,7 @@ class _AddAccountState extends State<AddAccount> {
                                               ),
                                             )
                                           : Text(
-                                              'Adicionar imagem',
+                                              widget.itemIcon,
                                               style: GoogleFonts.poppins(
                                                 textStyle: Theme.of(context)
                                                     .textTheme
@@ -222,7 +241,13 @@ class _AddAccountState extends State<AddAccount> {
                                               TextFormField(
                                                 keyboardType:
                                                     TextInputType.text,
-                                                controller: _websiteController,
+                                                initialValue:
+                                                    widget.itemWebsite,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _websiteController = value;
+                                                  });
+                                                },
                                                 validator: (value) {
                                                   return value == ''
                                                       ? "Link do website não pode estar vazio."
@@ -295,8 +320,13 @@ class _AddAccountState extends State<AddAccount> {
                                               TextFormField(
                                                 keyboardType:
                                                     TextInputType.text,
-                                                controller:
-                                                    _emailOrPhoneController,
+                                                initialValue: widget.itemEmail,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _emailOrPhoneController =
+                                                        value;
+                                                  });
+                                                },
                                                 style: const TextStyle(
                                                     color: Color(0xFF3c4950)),
                                                 decoration: InputDecoration(
@@ -376,9 +406,15 @@ class _AddAccountState extends State<AddAccount> {
                                                   height: _loading ? 5 : 0),
                                               TextFormField(
                                                 obscureText: _showPassword,
+                                                initialValue:
+                                                    widget.itemPassword,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _passwordController = value;
+                                                  });
+                                                },
                                                 keyboardType:
                                                     TextInputType.text,
-                                                controller: _passwordController,
                                                 style: const TextStyle(
                                                     color: Color(0xFF3c4950)),
                                                 decoration: InputDecoration(
@@ -577,7 +613,7 @@ class _AddAccountState extends State<AddAccount> {
                                           setState(() {
                                             _loading = true;
                                           });
-                                          _createAccount(context);
+                                          _editAccount(context);
                                         },
                                         style: ButtonStyle(
                                             backgroundColor:
@@ -606,7 +642,7 @@ class _AddAccountState extends State<AddAccount> {
                                                     CircularProgressIndicator(
                                                         color: Colors.white),
                                               )
-                                            : const Text("Salvar"),
+                                            : const Text("Editar"),
                                       ),
                                     ),
                                   ],
@@ -671,26 +707,33 @@ class _AddAccountState extends State<AddAccount> {
               style: GoogleFonts.poppins(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
-                  color: isSelected == true && id == idSelected
+                  color: isSelected == false && id == widget.itemCategory
                       ? const Color(0xFFe19785)
-                      : Colors.black)),
+                      : isSelected == true && id == idSelected
+                          ? const Color(0xFFe19785)
+                          : Colors.black)),
         ],
       ),
     );
   }
 
   // my functions
-  void _createAccount(context) {
+  void _editAccount(context) {
     if (_formKey.currentState!.validate()) {
-      final id = UniqueKey().hashCode;
+      final id = widget.itemId;
+      int idCategory = widget.itemCategory;
+      String file = widget.itemIcon.toString();
+      String website = widget.itemWebsite;
+      String email = widget.itemEmail;
+      String password = widget.itemPassword;
       _accountRepository
-          .createAccount(
+          .updateAccount(
               id,
-              _idSelected,
-              _myFile.toString(),
-              _websiteController.text,
-              _emailOrPhoneController.text,
-              _passwordController.text)
+              _idSelected == 0 ? idCategory : _idSelected,
+              _myFile.toString() == '' ? file : _myFile.toString(),
+              _websiteController == '' ? website : _websiteController,
+              _emailOrPhoneController == '' ? email : _emailOrPhoneController,
+              _passwordController == '' ? password : _passwordController)
           .then((_) {
         Navigator.push(
           context,

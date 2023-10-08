@@ -6,8 +6,6 @@ abstract class AuthEvent extends Equatable {
 }
 
 class SignInRequested extends AuthEvent {
-  // final String password;
-  // SignInRequested(this.password);
   SignInRequested();
 }
 

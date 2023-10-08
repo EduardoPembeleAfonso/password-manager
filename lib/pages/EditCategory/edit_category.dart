@@ -6,26 +6,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 
-// pages
-import 'package:password_manager/pages/Drawer/drawer.dart';
+//pages
+import 'package:password_manager/pages/ViewCategory/view_category.dart';
 
 // repos
 import 'package:password_manager/database/repositories/category_repository.dart';
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({Key? key}) : super(key: key);
+class EditCategory extends StatefulWidget {
+  const EditCategory({
+    super.key,
+    required this.itemId,
+    required this.itemName,
+    required this.itemImage,
+  });
+  final int itemId;
+  final String itemName;
+  final String itemImage;
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<EditCategory> createState() => _EditCategoryState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class _EditCategoryState extends State<EditCategory> {
   final _categoryRepository = CategoryRepository();
   final _formKey = GlobalKey<FormState>();
-  final _nameCategoryController = TextEditingController();
+  String _nameCategoryController = '';
   String? _fileName;
   late File _myFilePreview;
-  late String _myFile;
+  String _myFile = '';
   Uint8List? _fileBytes;
   late bool _hasFileName;
   bool _loading = false;
@@ -33,25 +41,26 @@ class _AddCategoryState extends State<AddCategory> {
   @override
   void initState() {
     _hasFileName = false;
-
     _loading = false;
     super.initState();
   }
 
   @override
-  void dispose() {
-    _nameCategoryController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    File file = File(widget.itemImage.toString());
     return DismissiblePage(
       onDismissed: () {
-        Navigator.of(context).pop();
+        Navigator.pushReplacement<void, void>(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => ViewCategory(
+              itemId: widget.itemId,
+              itemName: widget.itemName,
+              itemImage: widget.itemImage,
+            ),
+          ),
+        );
       },
-      // Note that scrollable widget inside DismissiblePage might limit the functionality
-      // If scroll direction matches DismissiblePage direction
       direction: DismissiblePageDismissDirection.multi,
       isFullScreen: false,
       child: Scaffold(
@@ -81,7 +90,7 @@ class _AddCategoryState extends State<AddCategory> {
                           margin: const EdgeInsets.only(
                               top: 20, left: 10, bottom: 20),
                           child: Text(
-                            'Adicionar nova categoria',
+                            'Editar categoria',
                             style: GoogleFonts.poppins(
                               textStyle:
                                   Theme.of(context).textTheme.displayMedium,
@@ -154,11 +163,9 @@ class _AddCategoryState extends State<AddCategory> {
                                                         _myFilePreview,
                                                         fit: BoxFit.cover,
                                                       )
-                                                    : const Icon(
-                                                        Icons.image_outlined,
-                                                        size: 30.0,
-                                                        color:
-                                                            Color(0xFF00a093),
+                                                    : Image.file(
+                                                        file,
+                                                        fit: BoxFit.cover,
                                                       ),
                                               ),
                                             )),
@@ -176,7 +183,7 @@ class _AddCategoryState extends State<AddCategory> {
                                               ),
                                             )
                                           : Text(
-                                              'Adicionar imagem',
+                                              widget.itemImage,
                                               style: GoogleFonts.poppins(
                                                 textStyle: Theme.of(context)
                                                     .textTheme
@@ -217,8 +224,13 @@ class _AddCategoryState extends State<AddCategory> {
                                               TextFormField(
                                                 keyboardType:
                                                     TextInputType.text,
-                                                controller:
-                                                    _nameCategoryController,
+                                                initialValue: widget.itemName,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _nameCategoryController =
+                                                        value;
+                                                  });
+                                                },
                                                 style: const TextStyle(
                                                     color: Color(0xFF3c4950)),
                                                 decoration: InputDecoration(
@@ -281,7 +293,7 @@ class _AddCategoryState extends State<AddCategory> {
                                           setState(() {
                                             _loading = true;
                                           });
-                                          _createCategory();
+                                          _editCategory();
                                         },
                                         style: ButtonStyle(
                                             backgroundColor:
@@ -310,7 +322,7 @@ class _AddCategoryState extends State<AddCategory> {
                                                     CircularProgressIndicator(
                                                         color: Colors.white),
                                               )
-                                            : const Text("Salvar"),
+                                            : const Text("Editar"),
                                       ),
                                     ),
                                   ],
@@ -326,16 +338,26 @@ class _AddCategoryState extends State<AddCategory> {
   }
 
   // my functions
-  void _createCategory() {
+  void _editCategory() {
     if (_formKey.currentState!.validate()) {
-      final id = UniqueKey().hashCode;
+      final id = widget.itemId;
+      String name = widget.itemName;
+      String file = widget.itemImage.toString();
       _categoryRepository
-          .createCategory(id, _nameCategoryController.text, _myFile.toString())
+          .updateCategory(
+              id,
+              _nameCategoryController == '' ? name : _nameCategoryController,
+              _myFile.toString() == '' ? file : _myFile.toString())
           .then((_) {
+        
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const MenuDrawer(),
+            builder: (context) => ViewCategory(
+              itemId: id,
+              itemName: _[0],
+              itemImage: _[1],
+            ),
           ),
         );
       }).catchError((_) {
