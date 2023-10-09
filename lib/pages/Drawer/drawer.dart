@@ -114,33 +114,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 },
               ),
               ListTile(
-                selected: _selectedIndex == 1,
+                selected: _selectedIndex == 2,
                 leading: const Icon(
-                  Icons.monetization_on_outlined,
+                  Icons.analytics_outlined,
                   color: Colors.white,
                   size: 25.0,
                 ),
                 title: Text(
-                  'Donativos',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                onTap: () {
-                  _onItemTapped(1);
-                },
-              ),
-              ListTile(
-                selected: _selectedIndex == 2,
-                leading: const Icon(
-                  Icons.cloud_upload_outlined,
-                  color: Colors.white,
-                  size: 25,
-                ),
-                title: Text(
-                  'Sincronização',
+                  'Analise',
                   style: GoogleFonts.poppins(
                     fontSize: 18.0,
                     color: Colors.white,
@@ -159,7 +140,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   size: 25,
                 ),
                 title: Text(
-                  'Avaliar a aplicação',
+                  'Avaliar',
                   style: GoogleFonts.poppins(
                     fontSize: 18.0,
                     color: Colors.white,
@@ -171,14 +152,33 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 },
               ),
               ListTile(
-                  selected: _selectedIndex == 4,
+                selected: _selectedIndex == 4,
+                leading: const Icon(
+                  Icons.info_outlined,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  'Sobre',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                onTap: () {
+                  _onItemTapped(4);
+                },
+              ),
+              ListTile(
+                  selected: _selectedIndex == 5,
                   leading: const Icon(
                     Icons.input,
                     color: Colors.white,
                     size: 30,
                   ),
                   title: Text(
-                    'Terminar sessão',
+                    'Sair',
                     style: GoogleFonts.poppins(
                       fontSize: 20.0,
                       color: Colors.white,
@@ -186,7 +186,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     ),
                   ),
                   onTap: () {
-                    _onItemTapped(4);
+                    _onItemTapped(5);
                     BlocProvider.of<AuthBloc>(context).add(
                       SignOutRequested(),
                     );
