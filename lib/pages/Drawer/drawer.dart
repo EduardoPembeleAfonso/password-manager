@@ -8,6 +8,8 @@ import 'package:password_manager/bloc/bloc_auth/auth_bloc.dart';
 // pages
 import 'package:password_manager/pages/SignIn/sign_in.dart';
 import 'package:password_manager/pages/Dashboard/dashboard.dart';
+import 'package:password_manager/pages/Analizy/analizy.dart';
+import 'package:password_manager/pages/About/about.dart';
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({Key? key}) : super(key: key);
@@ -23,18 +25,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     Dashboard(),
+    Dashboard(),
+    Analizy(),
     Text(
-      'Index 0: Home',
+      'Index 2: AVALIAR',
       style: optionStyle,
     ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    About()
   ];
 
   void _onItemTapped(int index) {
@@ -130,6 +127,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ),
                 onTap: () {
                   _onItemTapped(2);
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -168,6 +166,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ),
                 onTap: () {
                   _onItemTapped(4);
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -186,7 +185,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     ),
                   ),
                   onTap: () {
-                    _onItemTapped(5);
                     BlocProvider.of<AuthBloc>(context).add(
                       SignOutRequested(),
                     );
