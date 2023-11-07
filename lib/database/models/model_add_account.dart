@@ -5,6 +5,7 @@ class AccountModel {
   String link = "";
   String contact = "";
   String password = "";
+  int security;
 
   AccountModel({
     required this.id,
@@ -13,6 +14,7 @@ class AccountModel {
     required this.link,
     required this.contact,
     required this.password,
+    required this.security
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class AccountModel {
       'link': link,
       'contact': contact,
       'password': password,
+      'security': security,
     };
   }
 }

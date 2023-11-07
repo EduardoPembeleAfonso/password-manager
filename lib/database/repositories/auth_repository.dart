@@ -38,6 +38,5 @@ class AuthRepository {
 
 
   Future<void> signOut() async {
-    print('SignOut');
   }
 }

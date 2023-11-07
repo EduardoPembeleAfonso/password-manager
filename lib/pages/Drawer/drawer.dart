@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,13 +7,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:password_manager/bloc/bloc_auth/auth_bloc.dart';
 
 // pages
-import 'package:password_manager/pages/SignIn/sign_in.dart';
+import 'package:password_manager/pages/Available/available.dart';
 import 'package:password_manager/pages/Dashboard/dashboard.dart';
-import 'package:password_manager/pages/Analizy/analizy.dart';
+import 'package:password_manager/pages/Analyse/analyse.dart';
+import 'package:password_manager/pages/SignIn/sign_in.dart';
 import 'package:password_manager/pages/About/about.dart';
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({Key? key}) : super(key: key);
+  const MenuDrawer({
+    super.key,
+    required this.pageId,
+  });
+
+  final int pageId;
 
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
@@ -23,16 +30,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Dashboard(),
-    Dashboard(),
-    Analizy(),
-    Text(
-      'Index 2: AVALIAR',
-      style: optionStyle,
-    ),
-    About()
+  final List<Widget> _widgetOptions = <Widget>[
+    const Dashboard(),
+    const Dashboard(),
+    const Analyse(),
+    const Available(),
+    const About()
   ];
+
+  @override
+  void initState() {
+    _selectedIndex = 0;
+    super.initState();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -42,6 +52,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var pageId = widget.pageId;
     return Scaffold(
       appBar: AppBar(
           backgroundColor: const Color(0xFF00a093),
@@ -51,14 +62,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
             height: 230,
             width: MediaQuery.of(context).size.width * 2 / 1,
             padding: const EdgeInsets.only(left: 285),
-            child: const IconButton(
-              icon: Icon(
-                Icons.notifications_none_outlined,
-                size: 40,
-                color: Colors.white,
-              ),
-              onPressed: null,
-            ),
           )),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -70,9 +73,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
             );
           }
         },
-        child: _widgetOptions[_selectedIndex],
+        child: _widgetOptions[_selectedIndex == 0 ? pageId : _selectedIndex],
       ),
-      // key: scaffoldKey,
       drawer: Drawer(
         child: Container(
           decoration: const BoxDecoration(
@@ -87,108 +89,202 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ),
           ),
           child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
+            padding: const EdgeInsets.all(10),
             children: [
-              const DrawerHeader(
-                child: Text('Drawer Header'),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerTheme:
+                      const DividerThemeData(color: Colors.transparent),
+                ),
+                child: DrawerHeader(
+                  child: Lottie.asset('assets/lotties/drawer.json'),
+                ),
               ),
-              ListTile(
-                selected: _selectedIndex == 1,
-                title: Text(
-                  'Início',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                leading: const Icon(Icons.home_outlined,
-                    color: Colors.white, size: 25.0),
-                onTap: () {
-                  _onItemTapped(1);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                selected: _selectedIndex == 2,
-                leading: const Icon(
-                  Icons.analytics_outlined,
-                  color: Colors.white,
-                  size: 25.0,
-                ),
-                title: Text(
-                  'Analise',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                onTap: () {
-                  _onItemTapped(2);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                selected: _selectedIndex == 3,
-                leading: const Icon(
-                  Icons.rate_review_outlined,
-                  color: Colors.white,
-                  size: 25,
-                ),
-                title: Text(
-                  'Avaliar',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                onTap: () {
-                  _onItemTapped(3);
-                },
-              ),
-              ListTile(
-                selected: _selectedIndex == 4,
-                leading: const Icon(
-                  Icons.info_outlined,
-                  color: Colors.white,
-                  size: 25,
-                ),
-                title: Text(
-                  'Sobre',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                onTap: () {
-                  _onItemTapped(4);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                  selected: _selectedIndex == 5,
-                  leading: const Icon(
-                    Icons.input,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  title: Text(
-                    'Sair',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal,
+              Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    height: 50,
+                    left: 0,
+                    width: _selectedIndex == 1 ? 280 : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3c4950),
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.transparent),
+                      ),
                     ),
                   ),
-                  onTap: () {
-                    BlocProvider.of<AuthBloc>(context).add(
-                      SignOutRequested(),
-                    );
-                  }),
+                  ListTile(
+                    selected: _selectedIndex == 1,
+                    title: Text(
+                      'Início',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    leading: const Icon(Icons.home_outlined,
+                        color: Colors.white, size: 25.0),
+                    onTap: () {
+                      _onItemTapped(1);
+                      Future.delayed(const Duration(milliseconds: 1100), () {
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    height: 50,
+                    left: 0,
+                    width: _selectedIndex == 2 ? 280 : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3c4950),
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.transparent),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    selected: _selectedIndex == 2,
+                    leading: const Icon(
+                      Icons.analytics_outlined,
+                      color: Colors.white,
+                      size: 25.0,
+                    ),
+                    title: Text(
+                      'Análise',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onTap: () {
+                      _onItemTapped(2);
+                      Future.delayed(const Duration(milliseconds: 1100), () {
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    height: 50,
+                    left: 0,
+                    width: _selectedIndex == 3 ? 280 : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3c4950),
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.transparent),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    selected: _selectedIndex == 3,
+                    leading: const Icon(
+                      Icons.rate_review_outlined,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    title: Text(
+                      'Avaliar',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onTap: () {
+                      _onItemTapped(3);
+                      Future.delayed(const Duration(milliseconds: 1100), () {
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    height: 50,
+                    left: 0,
+                    width: _selectedIndex == 4 ? 280 : 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3c4950),
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.transparent),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    selected: _selectedIndex == 4,
+                    leading: const Icon(
+                      Icons.info_outlined,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    title: Text(
+                      'Sobre',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onTap: () {
+                      _onItemTapped(4);
+                      Future.delayed(const Duration(milliseconds: 1100), () {
+                        Navigator.pop(context);
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: _selectedIndex == 5
+                        ? const Color(0xFF3c4950)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(width: 1, color: Colors.transparent)),
+                child: ListTile(
+                    selected: _selectedIndex == 5,
+                    leading: const Icon(
+                      Icons.input,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    title: Text(
+                      'Sair',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onTap: () {
+                      BlocProvider.of<AuthBloc>(context).add(
+                        SignOutRequested(),
+                      );
+                    }),
+              ),
             ],
           ),
         ),

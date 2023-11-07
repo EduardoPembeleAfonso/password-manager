@@ -8,7 +8,9 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:password_manager/database/repositories/category_repository.dart';
 import 'package:password_manager/database/repositories/account_repository.dart';
-import 'package:password_manager/pages/Dashboard/dashboard.dart';
+
+// pages
+import 'package:password_manager/pages/Drawer/drawer.dart';
 
 class AddAccount extends StatefulWidget {
   const AddAccount({Key? key}) : super(key: key);
@@ -695,7 +697,7 @@ class _AddAccountState extends State<AddAccount> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Dashboard(),
+            builder: (context) => const MenuDrawer(pageId: 1,),
           ),
         );
       }).catchError((_) {

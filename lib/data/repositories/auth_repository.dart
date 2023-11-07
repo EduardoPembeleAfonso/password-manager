@@ -28,17 +28,14 @@ class AuthRepository {
 
       _isAuthenticating = false;
     } on PlatformException catch (e) {
-      print(e);
       _isAuthenticating = false;
       _authorized = 'Error - ${e.toString()}';
       return;
     }
 
     _authorized = authenticated ? 'Authorized' : 'Not Authorized';
-    print(_authorized);
   }
 
   Future<void> signOut() async {
-    print('SignOut');
   }
 }

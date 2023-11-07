@@ -80,7 +80,7 @@ class _ViewCategoryState extends State<ViewCategory> {
         Navigator.pushReplacement<void, void>(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => const MenuDrawer(),
+            builder: (BuildContext context) => const MenuDrawer(pageId: 1,),
           ),
         );
       },

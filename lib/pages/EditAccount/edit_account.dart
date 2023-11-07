@@ -8,7 +8,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 
 // pages
-import 'package:password_manager/pages/Dashboard/dashboard.dart';
 import 'package:password_manager/pages/Drawer/drawer.dart';
 
 // repos
@@ -80,7 +79,7 @@ class _EditAccountState extends State<EditAccount> {
         Navigator.pushReplacement<void, void>(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => const MenuDrawer(),
+            builder: (BuildContext context) => const MenuDrawer(pageId: 1,),
           ),
         );
       },
@@ -738,7 +737,7 @@ class _EditAccountState extends State<EditAccount> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Dashboard(),
+            builder: (context) => const MenuDrawer(pageId: 1,),
           ),
         );
       }).catchError((_) {

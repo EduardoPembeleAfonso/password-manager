@@ -42,7 +42,7 @@ class _SignInState extends State<SignIn> {
         listener: (context, state) {
           if (state is Authenticated) {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: ((context) => const MenuDrawer())));
+                MaterialPageRoute(builder: ((context) => const MenuDrawer(pageId: 1,))));
           }
           if (state is AuthError) {
             ScaffoldMessenger.of(context)

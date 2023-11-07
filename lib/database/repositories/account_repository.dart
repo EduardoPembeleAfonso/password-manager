@@ -20,21 +20,42 @@ class AccountRepository {
     try {
       final Database db = await _getDatabase();
 
+      bool hasDigits = RegExp(r'\d').hasMatch(password);
+      bool hasPunct =
+          RegExp(r'[!@#<>?.":_`~;[\]\\|=+)(*&^%$£]').hasMatch(password);
+      bool hasUpper = RegExp(r'[A-Z]').hasMatch(password);
+
+      late var securityTest = 0;
+
+      if (hasDigits == true && hasPunct == true) {
+        securityTest = 2;
+      }
+      if (hasDigits == true && hasUpper == true) {
+        securityTest = 2;
+      }
+
+      if (hasPunct == true && hasUpper == true) {
+        securityTest = 2;
+      }
+
+      if (hasDigits == true && hasPunct == true && hasUpper == true) {
+        securityTest = 1;
+      }
+
       final model = AccountModel(
-        id: id,
-        categoryId: categoryId,
-        image: image,
-        link: link,
-        contact: contact,
-        password: password,
-      );
+          id: id,
+          categoryId: categoryId,
+          image: image,
+          link: link,
+          contact: contact,
+          password: password,
+          security: securityTest);
 
       await db.insert(
         TABLE_NAME_ACCOUNT,
         model.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-
     } catch (ex) {
       return;
     }
@@ -49,6 +70,72 @@ class AccountRepository {
       return list;
     } catch (ex) {
       return <AccountModel>[];
+    }
+  }
+
+  Future getAccountsSecurityLevelOne() async {
+    try {
+      final Database db = await _getDatabase();
+
+      const term = 1;
+
+      List<Map> list = await db.query(
+        TABLE_NAME_ACCOUNT,
+        where: "security LIKE ?",
+        whereArgs: [
+          '%$term%',
+        ],
+      );
+
+      int length = list.length;
+
+      return length;
+    } catch (ex) {
+      return 0;
+    }
+  }
+
+  Future getAccountsSecurityLevelTwo() async {
+    try {
+      final Database db = await _getDatabase();
+
+      const term = 2;
+
+      List<Map> list = await db.query(
+        TABLE_NAME_ACCOUNT,
+        where: "security LIKE ?",
+        whereArgs: [
+          '%$term%',
+        ],
+      );
+
+      int length = list.length;
+
+      return length;
+    } catch (ex) {
+      return 0;
+    }
+  }
+
+  Future getAccountsSecurityLevelZero() async {
+    try {
+      final Database db = await _getDatabase();
+
+      const term = 0;
+
+      List<Map> list = await db.query(
+        TABLE_NAME_ACCOUNT,
+        where: "security LIKE ?",
+        whereArgs: [
+          '%$term%',
+        ],
+      );
+
+      int length = list.length;
+
+      return length;
+    } catch (ex) {
+      return 0;
     }
   }
 
@@ -89,16 +176,22 @@ class AccountRepository {
       );
 
       return AccountModel(
-        id: maps[0]['id'],
-        categoryId: maps[0]['categoryId'],
-        image: maps[0]['image'],
-        link: maps[0]['link'],
-        contact: maps[0]['contact'],
-        password: maps[0]['password'],
-      );
+          id: maps[0]['id'],
+          categoryId: maps[0]['categoryId'],
+          image: maps[0]['image'],
+          link: maps[0]['link'],
+          contact: maps[0]['contact'],
+          password: maps[0]['password'],
+          security: maps[0]['security']);
     } catch (ex) {
       return AccountModel(
-          id: 0, categoryId: 0, image: '', link: '', contact: '', password: '');
+          id: 0,
+          categoryId: 0,
+          image: '',
+          link: '',
+          contact: '',
+          password: '',
+          security: 0);
     }
   }
 
@@ -121,11 +214,34 @@ class AccountRepository {
       final Database db = await _getDatabase();
       final model = await getAccount(id);
 
+      bool hasDigits = RegExp(r'\d').hasMatch(password);
+      bool hasPunct =
+          RegExp(r'[!@#<>?.":_`~;[\]\\|=+)(*&^%$£]').hasMatch(password);
+      bool hasUpper = RegExp(r'[A-Z]').hasMatch(password);
+
+      late var securityTest = 3;
+
+      if (hasDigits == true && hasPunct == true) {
+        securityTest = 2;
+      }
+      if (hasDigits == true && hasUpper == true) {
+        securityTest = 2;
+      }
+
+      if (hasPunct == true && hasUpper == true) {
+        securityTest = 2;
+      }
+
+      if (hasDigits == true && hasPunct == true && hasUpper == true) {
+        securityTest = 1;
+      }
+
       model.categoryId = categoryId;
       model.image = image;
       model.link = link;
       model.contact = contact;
       model.password = password;
+      model.security = securityTest;
 
       await db.update(
         TABLE_NAME_ACCOUNT,

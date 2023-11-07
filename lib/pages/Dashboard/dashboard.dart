@@ -337,78 +337,72 @@ class _DashboardState extends State<Dashboard> {
                         Container(
                           color: const Color.fromARGB(255, 239, 238, 238),
                           width: MediaQuery.of(context).size.width,
-                          height: 600,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, left: 10, right: 10),
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(20),
-                                        topLeft: Radius.circular(20)),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.transparent,
-                                      style: BorderStyle.solid,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 10.0, bottom: 10.0),
-                                        child: Text(
-                                          'Ultimas contas',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: Theme.of(context)
-                                                .textTheme
-                                                .displayMedium,
-                                            fontSize: 18.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: FutureBuilder(
-                                            future: _accountRepository
-                                                .getAccounts(),
-                                            builder: (context,
-                                                AsyncSnapshot snapshot) {
-                                              if (snapshot.hasData &&
-                                                  snapshot.data != null) {
-                                                return ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    itemCount:
-                                                        snapshot.data?.length,
-                                                    itemBuilder:
-                                                        ((context, index) {
-                                                      return buildAccounts(
-                                                          snapshot, index);
-                                                    }));
-                                              } else {
-                                                return const Center(
-                                                  child: SizedBox(
-                                                      height: 50,
-                                                      width: 50,
-                                                      child:
-                                                          CircularProgressIndicator()),
-                                                );
-                                              }
-                                            }),
-                                      ),
-                                    ],
-                                  ),
+                          height: MediaQuery.of(context).size.height,
+                          child: SingleChildScrollView(
+                            reverse: false,
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 20, left: 10, right: 10),
+                              margin: const EdgeInsets.only(bottom: 20),
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    topLeft: Radius.circular(20)),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.transparent,
+                                  style: BorderStyle.solid,
                                 ),
                               ),
-                            ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10.0, bottom: 10.0),
+                                    child: Text(
+                                      'Ultimas contas',
+                                      style: GoogleFonts.poppins(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .displayMedium,
+                                        fontSize: 18.0,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: FutureBuilder(
+                                        future: _accountRepository.getAccounts(),
+                                        builder:
+                                            (context, AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData &&
+                                              snapshot.data != null) {
+                                            return ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: snapshot.data?.length,
+                                                itemBuilder: ((context, index) {
+                                                  return buildAccounts(
+                                                      snapshot, index);
+                                                }));
+                                          } else {
+                                            return const Center(
+                                              child: SizedBox(
+                                                  height: 50,
+                                                  width: 50,
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                            );
+                                          }
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],

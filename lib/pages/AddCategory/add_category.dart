@@ -335,7 +335,7 @@ class _AddCategoryState extends State<AddCategory> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const MenuDrawer(),
+            builder: (context) => const MenuDrawer(pageId: 1,),
           ),
         );
       }).catchError((_) {
